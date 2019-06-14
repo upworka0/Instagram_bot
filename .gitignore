@@ -115,3 +115,4 @@ celerybeat-schedule
 
 userpass.txt
 sessonid.txt
+*.txt

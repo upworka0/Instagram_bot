@@ -59,13 +59,13 @@ def OutPut(text):
     """
     outputf.write("{}\n".format(text))
 
-def getCSRFToken():
+def getCSRFToken(proxies):
     """
     Get csrf_token from login page of instagram
     :return: string
     """
     csrf_Url = "https://www.instagram.com/accounts/login/"
-    res = requests.get(csrf_Url)
+    res = requests.get(csrf_Url, proxies=proxies)
     csrf_token = res.cookies['csrftoken']
     return csrf_token
 
@@ -94,7 +94,7 @@ def LoginAction(row):
         'content-type': "application/x-www-form-urlencoded",
         'x-requested-with': "XMLHttpRequest",
         'user-agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36",
-        'x-csrftoken': getCSRFToken(),
+        'x-csrftoken': getCSRFToken(proxies),
         'x-ig-app-id': "936619743392459",
         'referer': "https://www.instagram.com/accounts/login/?source=auth_switcher"
         }
