@@ -112,6 +112,6 @@ venv.bak/
 *.sqlite3
 
 celerybeat-schedule
-icons/
+
 userpass.txt
 sessonid.txt

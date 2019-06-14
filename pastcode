@@ -1,0 +1,85 @@
+import time
+import requests
+import threading
+global proxyid, proxylist
+
+def processdata(sessions, mentions, proxylist):
+    data = []
+    menid = 0
+    proxyid = 0
+    for ses in sessions:
+        try:
+            row = []
+            row.append([ses, mentions[menid], proxylist[proxyid]])
+            menid = menid + 1
+            proxyid = proxyid + 1 if proxyid + 1 < len(proxylist) else 0
+
+            row.append([ses, mentions[menid], proxylist[proxyid]])
+            menid = menid + 1
+            proxyid = proxyid + 1 if proxyid + 1 < len(proxylist) else 0
+
+            row.append([ses, mentions[menid], proxylist[proxyid]])
+            menid = menid + 1
+            proxyid = proxyid + 1 if proxyid + 1 < len(proxylist) else 0
+
+            row.append([ses, mentions[menid], proxylist[proxyid]])
+            menid = menid + 1
+            proxyid = proxyid + 1 if proxyid + 1 < len(proxylist) else 0
+
+            data.append(row)
+        except:
+            pass
+    return data
+
+def Unit(row):
+    url = "https://www.instagram.com/web/comments/2063181704377886885/add/"
+    for dt in row:
+        time.sleep(1)
+        proxies = {
+            "http": "http://" + dt[2],
+            "https": "https://" + dt[2]
+        }
+
+        session = dt[0]
+        user = dt[1]
+        print('\n======================================================================================\nUsig session:{0} , Using proxy: {1}, Usernames: {2}'.format(session, dt[2], user))
+        payload = "comment_text=" + user + "&replied_to_comment_id="
+        headers = {
+            'cookie': "mid=5; fbm_124024574287414=base_domain=www2.evil2.com; csrftoken=5es0TEJiV6JOOjEzqyAfyeyN1FtnRIi1; shbid=8759; shbts=1558661195.9758945; ds_user_id=11326480499; sessionid=" + session + "; rur=P3;",
+            'content-type': "application/x-www-form-urlencoded",
+            'x-csrftoken': "5es0TEJiV6JOOjEzqyAfyeyN1FtnRIi1"
+        }
+
+        try:
+            response = requests.post(url, data=payload, headers=headers, proxies=proxies, timeout=10)
+            print(response.text)
+        except:
+            pass
+
+filepath = 'C:\\cygwin64\\home\\mzabo\\new\\total.txt'
+usernames = 'C:\\cygwin64\\home\\mzabo\\new\\MENTIONS.txt'
+proxyfile = "C:\\cygwin64\\home\\mzabo\\new\\proxies.txt"
+
+file = open(proxyfile, 'r')
+proxylist = file.readlines()
+proxylist = [d.strip() for d in proxylist]
+
+with open(filepath, 'r') as f1:
+    sessions = f1.readlines()
+    sessions = [se.strip() for se in sessions]
+
+# read mention file
+with open(usernames, 'r') as f2:
+    mentions = f2.readlines()
+    mentions = [me.strip() for me in mentions]
+
+data = processdata(sessions=sessions, mentions=mentions, proxylist=proxylist)
+
+if __name__=='__main__':
+    runningThreads = []
+    for row in data:
+        t = threading.Thread(target=Unit, args=(row,))
+        runningThreads.append(t)
+        t.start()
+    for th in runningThreads:
+        th.join()
